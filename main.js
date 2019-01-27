@@ -1,24 +1,61 @@
 var yyy = document.getElementById('xxx');
-
 var context = yyy.getContext('2d');
+var lineWidth = 3
 
 autoSetCanvasSize(yyy);
 listenToUser(yyy);
 
   
-/******************/
-
 var eraserEnabled = false;
+pen.onclick = function(){
+  eraserEnabled = false
+  pen.classList.add('active')
+  eraser.classList.remove('active')
+}
 eraser.onclick = function(){
-  eraserEnabled = true;
-  actions.className = 'actions x';
-};
-brush.onclick = function(){
-  eraserEnabled = false;
-  actions.className = 'actions';
-};
+  eraserEnabled = true
+  eraser.classList.add('active')
+  pen.classList.remove('active')
+}
+clear.onclick = function(){
+  context.clearRect(0, 0, yyy.width, yyy.height)
+}
+download.onclick = function(){
+  var url = yyy.toDataURL("image/png")
+  var a = document.createElement('a')
+  document.body.appendChild(a)
+  a.href = url
+  a.download = '我的画'
+  a.target = '_blank'
+  a.click()
+}
 
+/******************/
+red.onclick = function(){
+  context.strokeStyle = 'red'
+  red.classList.add('active')
+  green.classList.remove('active')
+  blue.classList.remove('active')
+}
+green.onclick = function(){
+  context.strokeStyle = 'green'
+  green.classList.add('active')
+  red.classList.remove('active')
+  blue.classList.remove('active')
+}
+blue.onclick = function(){
+  context.strokeStyle = 'blue'
+  blue.classList.add('active')
+  red.classList.remove('active')
+  green.classList.remove('active')
+}
 
+thin.onclick = function(){
+  lineWidth = 3
+}
+thick.onclick = function(){
+  lineWidth = 5
+}
 
 
 /*************/
@@ -42,16 +79,14 @@ function autoSetCanvasSize(canvas){
 
 function drawCircle(x, y, radius){
   context.beginPath();
-  context.fillStyle = 'black';
   context.arc(x, y, radius, 0, Math.PI*2);
   context.fill();
 }
 
 function drawLine(x1,y1,x2,y2){
   context.beginPath();
-  context.strokeStyle = 'black';
-  context.lineWidth = 3;
   context.moveTo(x1,y1);
+  context.lineWidth = lineWidth;
   context.lineTo(x2, y2);
   context.stroke();
   context.closePath();
@@ -87,14 +122,14 @@ function listenToUser(canvas){
         lastPoint = newPoint;
         }
     }
-    canvas.ontouchend = function(){
+    canvas.ontouchend = function(aaa){
       using = false;
     }
   }else{
     // 非触屏
-    canvas.onmousedown = function(a){
-      var x = a.clientX;
-      var y = a.clientY;
+    canvas.onmousedown = function(aaa){
+      var x = aaa.clientX;
+      var y = aaa.clientY;
       using = true;
       if(eraserEnabled){ 
         context.clearRect(x-3, y-3, 10, 10);
@@ -102,9 +137,9 @@ function listenToUser(canvas){
         lastPoint = {"x":x, "y":y};
      }
   };
-    canvas.onmousemove = function(a){
-      var x = a.clientX;
-      var y = a.clientY;
+    canvas.onmousemove = function(aaa){
+      var x = aaa.clientX;
+      var y = aaa.clientY;
       
       if(!using){return;}
       
@@ -116,7 +151,7 @@ function listenToUser(canvas){
         lastPoint = newPoint;
         }
     };
-    canvas.onmouseup = function(a){
+    canvas.onmouseup = function(aaa){
       using = false;
     };
   }
